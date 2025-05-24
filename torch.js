@@ -1,34 +1,26 @@
 module.exports = {
   run: [
-    // windows nvidia 50 series
+    // nvidia 50 series
     {
-      "when": "{{platform === 'win32' && gpu === 'nvidia' && kernel.gpus && kernel.gpus.find(x => / 50.+/.test(x.model))}}",
+      "when": "{{gpu === 'nvidia' && kernel.gpu_model && / 50.+/.test(kernel.gpu_model) }}",
       "method": "shell.run",
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
         "message": [
-          "uv pip install torch torchvision torchaudio {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu128",
-          "{{args && args.triton ? 'uv pip install -U --pre triton-windows' : ''}}",
-          "{{args && args.sageattention ? 'uv pip install https://github.com/woct0rdho/SageAttention/releases/download/v2.1.1-windows/sageattention-2.1.1+cu128torch2.7.0-cp310-cp310-win_amd64.whl' : ''}}",
+          "uv pip install torch torchvision torchaudio {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu128"
         ]
       },
       "next": null
     },
-    // windows nvidia
     {
       "when": "{{platform === 'win32' && gpu === 'nvidia'}}",
       "method": "shell.run",
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": [
-          "uv pip install torch torchvision torchaudio {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu124",
-          "{{args && args.triton ? 'uv pip install triton-windows --force-reinstall' : ''}}",
-          "{{args && args.sageattention ? 'uv pip install https://github.com/deepbeepmeep/SageAttention/raw/refs/heads/main/releases/sageattention-2.1.0-cp310-cp310-win_amd64.whl --force-reinstall' : ''}}"
-        ]
-      },
-      "next": null
+        "message": "uv pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu124"
+      }
     },
     // windows amd
     {
@@ -37,9 +29,8 @@ module.exports = {
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": "uv pip install torch-directml torchaudio torchvision numpy==1.26.4"
-      },
-      "next": null
+        "message": "uv pip install torch-directml torchvision torchaudio numpy==1.26.4"
+      }
     },
     // windows cpu
     {
@@ -48,34 +39,28 @@ module.exports = {
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": "uv pip install torch torchvision torchaudio numpy==1.26.4"
-      },
-      "next": null
+        "message": "uv pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0"
+      }
     },
-    // mac
+    // apple mac
     {
-      "when": "{{platform === 'darwin'}}",
+      "when": "{{platform === 'darwin' && arch === 'arm64'}}",
       "method": "shell.run",
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
         "message": "uv pip install torch torchvision torchaudio"
-      },
-      "next": null
+      }
     },
-    // linux nvidia 50 series
+    // intel mac
     {
-      "when": "{{platform === 'linux' && gpu === 'nvidia' && kernel.gpus && kernel.gpus.find(x => / 50.+/.test(x.model))}}",
+      "when": "{{platform === 'darwin' && arch !== 'arm64'}}",
       "method": "shell.run",
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": [
-          "uv pip install torch torchvision torchaudio {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu128",
-          "{{args && args.sageattention ? 'uv pip install git+https://github.com/thu-ml/SageAttention.git' : ''}}"
-        ]
-      },
-      "next": null
+        "message": "uv pip install torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2"
+      }
     },
     // linux nvidia
     {
@@ -84,12 +69,8 @@ module.exports = {
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": [
-          "uv pip install torch torchvision torchaudio {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu124",
-          "{{args && args.sageattention ? 'uv pip install git+https://github.com/thu-ml/SageAttention.git' : ''}}"
-        ]
-      },
-      "next": null
+        "message": "uv pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 {{args && args.xformers ? 'xformers' : ''}} --index-url https://download.pytorch.org/whl/cu124"
+      }
     },
     // linux rocm (amd)
     {
@@ -98,20 +79,18 @@ module.exports = {
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": "uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2.4"
-      },
-      "next": null
+        "message": "uv pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --index-url https://download.pytorch.org/whl/rocm6.2"
+      }
     },
     // linux cpu
     {
-      "when": "{{platform === 'linux' && (gpu !== 'amd' && gpu !=='nvidia')}}",
+      "when": "{{platform === 'linux' && (gpu !== 'amd' && gpu !=='amd')}}",
       "method": "shell.run",
       "params": {
         "venv": "{{args && args.venv ? args.venv : null}}",
         "path": "{{args && args.path ? args.path : '.'}}",
-        "message": "uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu"
-      },
-      "next": null
+        "message": "uv pip install torch==2.5.0 torchvision==0.20.0 torchaudio==2.5.0 --index-url https://download.pytorch.org/whl/cpu"
+      }
     }
   ]
 }
