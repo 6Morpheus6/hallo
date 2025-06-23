@@ -28,7 +28,7 @@ module.exports = {
         venv: "env",                // Edit this to customize the venv folder path
         path: "app",                // Edit this to customize the path to start the shell from
         message: [
-          "uv pip install gradio==3.50.2 devicetorch",
+          "uv pip install gradio==5.34.2 devicetorch",
           "{{platform === 'darwin' ? 'pip install eva-decord' : 'pip install decord'}}",
           "uv pip install -r ../requirements.txt",
         ]
